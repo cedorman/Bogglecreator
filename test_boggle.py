@@ -1,5 +1,7 @@
 from unittest import TestCase
 from boggle import Boggle
+import numpy as np
+
 
 class TestBoggle(TestCase):
 
@@ -69,3 +71,10 @@ class TestBoggle(TestCase):
         b.print_board()
         result = b.find_word('SCARECROW')
         print("Result is: {}".format(result))
+
+
+def test_delete():
+    """Testing out some things in numpy"""
+    x = np.array([3, 54, 6, 7, 4, 23, 5, 6, 2, 1, 3])
+    y = np.delete(x, np.where(x == 3))
+    print("{} {}".format(x, y))
