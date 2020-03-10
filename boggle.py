@@ -41,7 +41,7 @@ class Boggle:
         """find a blank on the board"""
         vals = np.argwhere(self.board == empty_letter)
         if len(vals) > 0:
-            random.shuffle(vals)
+            np.random.shuffle(vals)
             return vals[0][0], vals[0][1]
 
         return -1, -1
@@ -65,7 +65,7 @@ class Boggle:
 
         # If got to end of word, we are done
         if len(word) == 0:
-            return True
+            return True, used_locations
 
         first_letter = word[0].encode()
 
@@ -188,7 +188,7 @@ class Boggle:
 
             # If successful, return with board
             if added == len(words):
-                print("Required {} attempts".format(str(trial+1)))
+                print("Required {} attempts".format(str(trial + 1)))
                 self.fill_remaining_random()
                 self.print_board()
                 return
@@ -205,12 +205,13 @@ class Boggle:
 
 
 def main():
-    boggle = Boggle(4)
-    words = ["SPRING", "COPY", "WATCH"]
+    boggle = Boggle(8)
+    words = ["SPRING", "COPY", "WATCH", "DOG", "AIRPLANE"]
     boggle.add_words(words)
+
 
 if __name__ == "__main__":
     # test_delete()
     np.random.seed(13)
-    random.seed(132)
+    random.seed(1324)
     main()
