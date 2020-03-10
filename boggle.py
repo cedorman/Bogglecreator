@@ -37,12 +37,12 @@ class Boggle:
             output = ', '.join(strarray)
             print("\t{}".format(output))
 
-    def find_empty_spot(self):
+    def find_empty_spot(self, aboard=None):
         """find a blank on the board"""
-        for row in range(self.size):
-            for col in range(self.size):
-                if self.board[row][col] == empty_letter:
-                    return row, col
+        vals = np.argwhere(self.board == empty_letter)
+        if len(vals) > 0:
+            random.shuffle(vals)
+            return vals[0][0], vals[0][1]
 
         return -1, -1
 
@@ -116,8 +116,7 @@ class Boggle:
         # self.print_board(current_working_board)
 
         if len(used_locations) == 0:
-            row = np.random.randint(0, self.size)
-            col = np.random.randint(0, self.size)
+            row, col = self.find_empty_spot(current_working_board)
             current_working_board[row][col] = first_letter
             possible_locations = [(row, col)]
             return self.add_word_sequentially(word[1:], current_working_board, possible_locations)
@@ -140,19 +139,19 @@ class Boggle:
             if row < 0 or row >= self.size or col < 0 or col >= self.size:
                 continue
 
-            if loc in used_locations or not current_working_board[row][col] == empty_letter:
+            # if loc in used_locations or not current_working_board[row][col] == empty_letter:
+            if not current_working_board[row][col] == empty_letter:
                 continue
 
-            if current_working_board[row][col] == empty_letter:
-                possible_locations = copy.deepcopy(used_locations)
-                possible_locations.append((row, col))
-                current_working_board[row][col] = first_letter
-                result, deep_working_board = self.add_word_sequentially(word[1:], current_working_board,
-                                                                        possible_locations)
-                if result:
-                    return True, deep_working_board
+            possible_locations = copy.deepcopy(used_locations)
+            possible_locations.append((row, col))
+            current_working_board[row][col] = first_letter
+            result, deep_working_board = self.add_word_sequentially(word[1:], current_working_board,
+                                                                    possible_locations)
+            if result:
+                return True, deep_working_board
 
-        return False, current_working_board
+        return False, None
 
     def add_word(self, word):
         """Given a new word, try to add it to the existing board"""
@@ -189,6 +188,7 @@ class Boggle:
 
             # If successful, return with board
             if added == len(words):
+                print("Required {} attempts".format(str(trial+1)))
                 self.fill_remaining_random()
                 self.print_board()
                 return
@@ -206,14 +206,11 @@ class Boggle:
 
 def main():
     boggle = Boggle(4)
-
-    # Add words one at a time
     words = ["SPRING", "COPY", "WATCH"]
     boggle.add_words(words)
 
-
 if __name__ == "__main__":
     # test_delete()
-    np.random.seed(10)
-    random.seed(12)
+    np.random.seed(13)
+    random.seed(132)
     main()
